@@ -405,7 +405,9 @@ Future<HttpServer> start({address: _DEFAULT_ADDRESS, int port: _DEFAULT_PORT,
       serverFuture = HttpServer.bind(address, port);
     } else {
       _logger.info("Using a secure connection with options: $secureOptions");
-      serverFuture = Function.apply(HttpServer.bindSecure, [address, port], secureOptions);
+      SecurityContext context = secureOptions[#context];
+      secureOptions.remove(#context);
+      serverFuture = Function.apply(HttpServer.bindSecure, [address, port, context], secureOptions);
     }
 
     return serverFuture.then((HttpServer server) {
